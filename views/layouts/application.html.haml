@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %title Egyptian revolution hashtags
+    %meta{ charset: "utf-8" }
+    %link{ rel: 'stylesheet', type: "text/css", href: '/stylesheets/style.css', media: 'screen'}
+
+    %script{ src: "/public/jquery.1.8.2.min.js" }
+      
+  %body
+    %header
+      %h1 
+        %a{ href: "http://slim-lang.com/"}
+          Slim
+    
+    = yield
+    
+  %footer
+    %small Copyleft #{Time.now.year} - CC BY-NC-SA

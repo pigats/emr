@@ -23,3 +23,5 @@ doc/
 *.sublime-workspace
 results/
 .rvmrc
+*.lock
+.sass-cache
