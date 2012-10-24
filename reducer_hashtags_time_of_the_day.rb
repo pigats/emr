@@ -13,7 +13,10 @@ STDIN.each do |line|
     key, hour = line.split("\t")
     
     if key != prev_key 
-      puts "#{prev_key}\t#{count}||#{hours.to_s}" unless prev_key.nil?
+      unless prev_key.nil?
+        hours_string = hours.map {|v,k| "#{v}:#{k}"}.join(",")
+        puts "#{prev_key}\t#{count}||#{hours_string}"
+      end
       count = 0
       hours = Hash.new(0)
       prev_key = key    
@@ -26,7 +29,8 @@ STDIN.each do |line|
     rescue Exception => e
     end
 end
-puts "#{prev_key}\t#{count}||#{hours.to_s}"
 
+hours_string = hours.map {|v,k| "#{v}:#{k}"}.join(",")
+puts "#{prev_key}\t#{count}||#{hours_string}"
 
 

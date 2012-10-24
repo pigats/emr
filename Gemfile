@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'shotgun'
-gem 'therubyracer'
+# gem 'therubyracer'
 gem 'haml'
 gem 'sass'
 gem 'coffee-script'
