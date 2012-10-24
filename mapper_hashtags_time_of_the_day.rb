@@ -2,14 +2,15 @@
 # encoding: UTF-8
 
 require 'json'
+require 'time'
 
 STDIN.each do |line|
   begin
     tweet = JSON.parse line
+    normalized_hour = Time.at(Time.utc(tweet['created_at']).to_i - tweet['user']['utc_offset']).utc.hour
     tweet['entities']['hashtags'].each do |hashtag| 
       hashtag = hashtag['text'].downcase.strip      
-      hashtag = hashtag[0...(hashtag.length*0.8).to_f.floor] if hashtag.length > 3 # stemming-of-the-poors
-      puts "LongValueSum:#{hashtag}\t1" 
+      puts "#{hashtag}\t#{normalized_hour}" if hashtag == 'egypt'
     end
 
   rescue Exception => e
