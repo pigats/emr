@@ -4,10 +4,16 @@
 require 'json'
 
 
-min_count = 100
-data_file = "all.data"
-json_file = "hashtags.json"
+data_file = ARGV[0] rescue nil
+json_file = ARGV[1] rescue nil
+cut = ARGV[2].to_i rescue nil
 
+unless data_file || json_file
+  puts "usage: ./jsonize.rb <inputfile> <outputfile> <minimum count>"
+  exit()
+end
+
+min_count = cut || 100
 final_array = []
 temp_hash = {}
 
