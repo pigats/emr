@@ -10,7 +10,7 @@ STDIN.each do |line|
     normalized_hour = Time.at(Time.utc(tweet['created_at']).to_i - tweet['user']['utc_offset']).utc.hour
     tweet['entities']['hashtags'].each do |hashtag| 
       hashtag = hashtag['text'].downcase.strip      
-      puts "#{hashtag}\t#{normalized_hour}" if hashtag == 'egypt'
+      puts "#{hashtag}\t#{normalized_hour}"
     end
 
   rescue Exception => e
