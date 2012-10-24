@@ -3,22 +3,30 @@
 
 require 'json'
 
+count = 0
+hours = {}
+key = ''
+prev_key = nil
+
 STDIN.each do |line|
   begin
-    hashtags = file.split("\n")
-    hashtags.each do |hashtag|
-      htag = hashtag.split("\t")
-      key = htag[0].strip
-      val = htag[1].to_i
-      
-      h = {key => val}
-      temp_hash.merge!(h){|k,a,b|a+b}
-    rescue Exception => e
+    key, hour = line.split("\t")
+    
+    if key != prev_key 
+      puts "#{prev_key}\t#{count}||#{hours.to_s}" unless prev_key.nil?
+      count = 0
+      hours = Hash.new(0)
+      prev_key = key    
     end
 
+    hour = hour.to_i
+    count += 1
+    hours[hour] += 1
+    
+    rescue Exception => e
+    end
 end
+puts "#{prev_key}\t#{count}||#{hours.to_s}"
 
-temp_hash.each {|k,v| final_array.push({"hashtag" => k, "count" => v}) if v >= min_count} 
 
-File.open(json_file, 'w'){|f| f.write(final_array.to_json)}
 
