@@ -11,6 +11,7 @@ STDIN.each do |line|
     tweet['entities']['hashtags'].each do |hashtag| 
       hashtag = hashtag['text'].downcase.strip      
       puts "#{hashtag}\t#{normalized_hour}"
+
     end
 
   rescue Exception => e
