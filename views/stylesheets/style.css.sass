@@ -1,11 +1,61 @@
+$black: #777
+$grey: #aaa
+
 svg
   margin-bottom: 50px
+  shape-rendering: crispEdges
+
+.title
+  font-size: 20px
+  fill: #f00
 
 .label
-  shape-rendering: crispEdges
-  
+
   text
-    font-family: monospace
-    font-size: 9px
-    stroke: #777
-    stroke-width: 0.1
+    font-size: 10px
+
+.label:not(.hashtag) text
+  text-anchor: end
+ 
+text
+  stroke: $black
+  stroke-width: 0.1
+  font-family: monospace
+
+body
+  font-family: "Helvetica neue", sans-serif
+  color: $black
+  padding: 18px
+
+h1
+
+  .h
+    display: inline
+    color: red
+
+  small
+    font-size: .7em
+    color: $grey
+
+
+ul
+  list-style-type: none
+  padding: 0
+
+  li
+    display: inline-block
+    margin-right: 20px
+    background: $black
+    border-radius: 4px
+
+    a
+      text-decoration: none
+      color: whiteSmoke
+      display: inline-block
+      padding: 4px 9px 5px
+
+    &.active
+      background: red
+
+footer
+  font-size: .8em

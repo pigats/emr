@@ -2,21 +2,24 @@ class Canvas
   constructor: ->
     @width = $(window).width()
     @height = $(window).height() 
-    @size = 10
+    @size = 20
 
-    @svg = d3.select('#days').append('svg')
+    $('svg').empty()
+
+    @svg = d3.select('svg')
       .attr('width', @width)
-      .attr('height', => @size*24+110)
+      .attr('height', => @size*24+250)
 
 
 class HashtagsViz extends Canvas
-  constructor: (hashtag_data) ->
+  constructor: (date, hashtag_data) ->
     super()
+    @date = date
     @hashtags = hashtag_data
     @normalize()
-    
+
+
   normalize: ->
-    #max = d3.max(@hashtags.map (h)-> h['count'])
     max = []
     (hashtag['hours_count'].forEach((h) -> max.push h['count'])) for hashtag in @hashtags
     max = d3.max(max)
@@ -28,44 +31,60 @@ class HashtagsViz extends Canvas
     size = @size
 
     @svg.append('g')
+      .attr('transform', 'translate(30 170) rotate(-90)')
+      .append('text')
+        .text( => "#{@date.substr(6,2)}-#{@date.substr(4,2)}-#{@date.substr(0,4)}")
+        .attr('class', 'title')
+     
+
+    @svg.append('g')
+      .attr('transform', 'translate(30 190) rotate(-90)')
+      .attr('class', 'label hashtag')
+      .selectAll('text')
+      .data(@hashtags)
+      .enter()
+        .append('text')
+        .text((d) -> d['hashtag'] )
+        .attr('x', 20)
+        .attr('y', (d, i) -> (i+1)*size)
+    
+    @svg.append('g')
+      .attr('transform', 'translate(20 510) rotate(-90)')
       .attr('class', 'label')
-      .attr('transform', 'translate(0,100)')
+      .selectAll('text')
+      .data(@hashtags)
+      .enter()
+        .append('text')
+        .text((d) -> d['count'] )
+        .attr('x', -160)
+        .attr('y', (d, i) -> i*size+.8+30)
+
+    @svg.append('g')
+      .attr('class', 'label')
+      .attr('transform', 'translate(0,140)')
       .selectAll('text')
       .data(d3.range(24))
       .enter()
-      .append('text')
-      .text((d) -> return d)
-      .attr('x', size)
-      .attr('y', (d) -> (d+2)*size)
-      
-    @svg.append('g')
-      .attr('class', 'label')
-      .selectAll('text')
-      .data(@hashtags)
-      .enter()
-      .append('text')
-      .text((d) -> return d['hashtag'])
-      .attr('x', 100)
-      .attr('y', (d, i) -> i*size+50)
-      .attr('transform', "rotate(-90 100 100)")
-
+        .append('text')
+        .text((d) -> d)
+        .attr('x', 20)
+        .attr('y', (d) -> d*size+55)
+ 
     g = @svg.selectAll('.hour')
       .data(@hashtags)
       .enter().append('g')
-      .attr('transform', (h, i) -> "translate(#{(i*size)+40}, 110)")
-      .attr('title', (h) -> h['hashtag'])
-      .attr('stroke', '#ccc')
+        .attr('transform', (h, i) -> "translate(#{i*size+40}, 180)")
+        .attr('title', (h) -> h['hashtag'])
+        .attr('stroke', '#ccc')
 
     g.selectAll('rect')
       .data( (hashtag) -> hashtag['hours_count'])
       .enter().append('rect')
-      .attr('height', size)
-      .attr('width', size)
-      .attr('y', (hour, i) -> i*size)
-      .style('opacity', (hour) => @opacity_ratio(hour['count']))
-      .style('fill', 'f00')
-
-
+        .attr('height', size)
+        .attr('width', size)
+        .attr('y', (hour, i) -> i*size)
+        .style('opacity', (hour) => @opacity_ratio(hour['count']))
+        .style('fill', 'f00')
 
 class Day
   constructor: (date)->
@@ -74,11 +93,30 @@ class Day
 
   draw: ->
     d3.json "/data/#{@date}.json", (hashtag_data) =>
-      hv = new HashtagsViz(hashtag_data)
+      hv = new HashtagsViz(@date, hashtag_data)
       hv.draw()
+
+
+class PageController
+  constructor: ->
+    window.onhashchange = this.load
+    this.load() if window.location.hash isnt ''
+
+  load: ->
+    hash = window.location.hash.substr(1)
+    try
+      new Day(hash).draw() 
+      $(".days li").removeClass('active')
+      $("##{hash}").addClass('active')
+
+    catch e
+      console.log e
+
+       
 
 
 
 
 $ ->
-  new Day('20110211').draw()
+  new PageController()
+  
