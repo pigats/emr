@@ -21,11 +21,6 @@ get '/javascripts/:name' do
   coffee :"javascripts/#{params[:name]}"
 end
 
-get '/public/:name' do
-  File.read(File.join(settings.public_folder, params[:name]))
-  
-end
-
 # Handle requests!
 get '/' do
   haml_layout "index"
