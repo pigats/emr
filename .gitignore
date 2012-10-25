@@ -25,3 +25,5 @@ results/
 .rvmrc
 *.lock
 .sass-cache
+
+public/data/
