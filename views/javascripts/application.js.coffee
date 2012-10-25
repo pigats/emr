@@ -6,7 +6,7 @@ class Canvas
 
     @svg = d3.select('#days').append('svg')
       .attr('width', @width)
-      .attr('height', => @size*30)
+      .attr('height', => @size*24+110)
 
 
 class HashtagsViz extends Canvas
@@ -23,20 +23,39 @@ class HashtagsViz extends Canvas
     @opacity_ratio = d3.scale.linear()
       .domain([0,max/5])
       .range([0.05,1])
-    console.log max
 
   draw: ->
     size = @size
 
+    @svg.append('g')
+      .attr('class', 'label')
+      .attr('transform', 'translate(0,100)')
+      .selectAll('text')
+      .data(d3.range(24))
+      .enter()
+      .append('text')
+      .text((d) -> return d)
+      .attr('x', size)
+      .attr('y', (d) -> (d+2)*size)
+      
+    @svg.append('g')
+      .attr('class', 'label')
+      .selectAll('text')
+      .data(@hashtags)
+      .enter()
+      .append('text')
+      .text((d) -> return d['hashtag'])
+      .attr('x', 100)
+      .attr('y', (d, i) -> i*size+50)
+      .attr('transform', "rotate(-90 100 100)")
+
     g = @svg.selectAll('.hour')
       .data(@hashtags)
       .enter().append('g')
-      .attr('transform', (h, i) -> "translate(#{i*size}, 0)")
+      .attr('transform', (h, i) -> "translate(#{(i*size)+40}, 110)")
       .attr('title', (h) -> h['hashtag'])
       .attr('stroke', '#ccc')
-      #.selectAll('text')
-      #.enter().append('text')
-      #.text( (hashtag) -> hashtag['hashtag'])
+
     g.selectAll('rect')
       .data( (hashtag) -> hashtag['hours_count'])
       .enter().append('rect')
@@ -47,34 +66,19 @@ class HashtagsViz extends Canvas
       .style('fill', 'f00')
 
 
-class Day
-  constructor: ->
 
+class Day
+  constructor: (date)->
+    @date = date
+    return this
+
+  draw: ->
+    d3.json "/data/#{@date}.json", (hashtag_data) =>
+      hv = new HashtagsViz(hashtag_data)
+      hv.draw()
 
 
 
 
 $ ->
-  $('g').tipsy({fade: true, gravity: 'sw', live: true })
-
-  d3.json "/data/20110211.json", (hashtag_data) =>
-    c = new HashtagsViz(hashtag_data)
-    c.draw()
-  #d3.json "/data/20110212.json", (hashtag_data) =>
-  #  c = new HashtagsViz(hashtag_data)
-  #  c.draw()
-  #d3.json "/data/20110213.json", (hashtag_data) =>
-  #  c = new HashtagsViz(hashtag_data)
-  #  c.draw()
-  #d3.json "/data/20110214.json", (hashtag_data) =>
-  #  c = new HashtagsViz(hashtag_data)
-  #  c.draw()
-  #d3.json "/data/20110215.json", (hashtag_data) =>
-  #  c = new HashtagsViz(hashtag_data)
-  #  c.draw()
-  #d3.json "/data/20110216.json", (hashtag_data) =>
-  #  c = new HashtagsViz(hashtag_data)
-  #  c.draw()
-  #d3.json "/data/20110217.json", (hashtag_data) =>
-  #  c = new HashtagsViz(hashtag_data)
-  #  c.draw()
+  new Day('20110211').draw()
