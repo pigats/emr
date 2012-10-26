@@ -29,12 +29,15 @@ class HashtagsViz extends Canvas
 
   draw: ->
     size = @size
+    days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 
     @svg.append('g')
       .attr('transform', 'translate(30 170) rotate(-90)')
       .append('text')
-        .text( => "#{@date.substr(6,2)}-#{@date.substr(4,2)}-#{@date.substr(0,4)}")
-        .attr('class', 'title')
+      .text( => 
+        d = new Date(Date.UTC(parseInt(@date.substr(0,4)),parseInt(@date.substr(4,2)),parseInt(@date.substr(6,2))))
+        days[d.getDay()] )
+      .attr('class', 'title')
      
 
     @svg.append('g')
